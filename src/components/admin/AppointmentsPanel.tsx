@@ -25,7 +25,8 @@ export function AppointmentsPanel() {
     },
   });
 
-  async function update(id: string, status: string) {
+  type Status = "pending" | "confirmed" | "cancelled" | "completed" | "rescheduled";
+  async function update(id: string, status: Status) {
     const { error } = await supabase.from("appointments").update({ status }).eq("id", id);
     if (error) toast.error(error.message);
     else {
