@@ -1,0 +1,140 @@
+{
+  "clinic": {
+    "name": "Cabinet Dr. Wajih Bensoltana",
+    "tagline": "Dental clinic in Menzel Temime",
+    "address": "Rue Mongi Slim, Menzel Temime, Tunisia",
+    "phone": "+216 00 000 000",
+    "email": "contact@cabinet-bensoltana.tn"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "about": "About",
+    "testimonials": "Testimonials",
+    "contact": "Contact",
+    "book": "Book appointment",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "admin": "Admin"
+  },
+  "language": { "label": "Language", "fr": "Français", "en": "English", "ar": "العربية" },
+  "home": {
+    "heroTitle": "Your smile, our priority",
+    "heroSubtitle": "Modern, attentive dental care in Menzel Temime. Book your appointment in a few clicks.",
+    "cta": "Book now",
+    "learnMore": "Explore our services",
+    "whyTitle": "Why choose us",
+    "why1Title": "Trusted expertise",
+    "why1": "A qualified team for all your dental care.",
+    "why2Title": "Modern equipment",
+    "why2": "State-of-the-art technology for precise, comfortable care.",
+    "why3Title": "Personalized attention",
+    "why3": "Care tailored to each patient.",
+    "servicesTitle": "Our services",
+    "seeAll": "See all services",
+    "testimonialsTitle": "What our patients say"
+  },
+  "services": {
+    "title": "Our dental services",
+    "subtitle": "A comprehensive range of care for the whole family.",
+    "duration": "{{min}} min",
+    "bookThis": "Book this service"
+  },
+  "about": {
+    "title": "About the clinic",
+    "subtitle": "Dr. Wajih Bensoltana — Dental surgeon",
+    "bio": "Qualified and passionate, Dr. Bensoltana is committed to delivering quality dental care in a warm, professional environment. The clinic, located in Menzel Temime, welcomes adults and children for consultations, preventive care, cosmetic dentistry, orthodontics, and much more.",
+    "values": "Our values",
+    "value1": "Empathy and care",
+    "value2": "Hygiene and safety",
+    "value3": "Innovation and precision"
+  },
+  "contact": {
+    "title": "Contact us",
+    "subtitle": "We are here to answer your questions.",
+    "hours": "Opening hours",
+    "getDirections": "Get directions",
+    "days": { "0": "Sunday", "1": "Monday", "2": "Tuesday", "3": "Wednesday", "4": "Thursday", "5": "Friday", "6": "Saturday" },
+    "closed": "Closed"
+  },
+  "booking": {
+    "title": "Book an appointment",
+    "subtitle": "Choose a service, a date and a time slot.",
+    "step1": "Service",
+    "step2": "Date & time",
+    "step3": "Your details",
+    "step4": "Confirmation",
+    "chooseService": "Select a service",
+    "chooseDate": "Select a date",
+    "chooseTime": "Available slots",
+    "noSlots": "No available slots for this date.",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "notes": "Notes (optional)",
+    "submit": "Confirm request",
+    "back": "Back",
+    "next": "Next",
+    "success": "Your appointment request has been sent!",
+    "successDetail": "We will contact you to confirm your slot.",
+    "bookAnother": "Book another appointment",
+    "slotTaken": "This slot was just taken. Please pick another.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "submitIn": "Sign in",
+    "submitUp": "Sign up",
+    "google": "Continue with Google",
+    "orContinue": "or",
+    "error": "Authentication error"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "appointments": "Appointments",
+    "patients": "Patients",
+    "calendar": "Calendar",
+    "blockedSlots": "Blocked slots",
+    "settings": "Settings",
+    "stats": {
+      "today": "Today",
+      "week": "This week",
+      "pending": "Pending",
+      "totalPatients": "Total patients"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "rescheduled": "Rescheduled"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "reschedule": "Reschedule",
+      "complete": "Mark complete",
+      "delete": "Delete",
+      "add": "Add",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "blockedSlot": {
+      "date": "Date",
+      "time": "Time (empty = whole day)",
+      "reason": "Reason",
+      "addBlock": "Block a slot"
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "quickLinks": "Quick links",
+    "contactUs": "Contact us"
+  }
+}
