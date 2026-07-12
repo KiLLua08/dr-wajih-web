@@ -1,70 +1,95 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-interface AuthCtx {
-  user: User | null;
-  session: Session | null;
+interface AuthContextType {
+  user: any | null;
   isAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
 }
 
-const Ctx = createContext<AuthCtx>({
+const AuthContext = createContext<AuthContextType>({
   user: null,
-  session: null,
   isAdmin: false,
   loading: true,
   signOut: async () => {},
 });
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<any | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      if (s?.user) {
-        setTimeout(() => {
-          supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", s.user.id)
-            .eq("role", "admin")
-            .maybeSingle()
-            .then(({ data }) => setIsAdmin(!!data));
-        }, 0);
-      } else {
-        setIsAdmin(false);
+    let isMounted = true;
+
+    const initAuth = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (isMounted) {
+          setUser(user);
+          if (user) {
+            const { data } = await supabase
+              .from("admin_users")
+              .select("id")
+              .eq("user_id", user.id)
+              .maybeSingle();
+            setIsAdmin(!!data);
+          }
+        }
+      } catch (error) {
+        console.error("Auth init error:", error);
+      } finally {
+        if (isMounted) setLoading(false);
       }
-    });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      if (data.session?.user) {
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", data.session.user.id)
-          .eq("role", "admin")
-          .maybeSingle()
-          .then(({ data: r }) => setIsAdmin(!!r));
+    };
+
+    initAuth();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (isMounted) {
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            const { data } = await supabase
+              .from("admin_users")
+              .select("id")
+              .eq("user_id", session.user.id)
+              .maybeSingle();
+            setIsAdmin(!!data);
+          } else {
+            setIsAdmin(false);
+          }
+        }
       }
-      setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
+    );
+
+    return () => {
+      isMounted = false;
+      authListener?.subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setUser(null);
+    setIsAdmin(false);
   };
 
   return (
-    <Ctx.Provider value={{ user: session?.user ?? null, session, isAdmin, loading, signOut }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, signOut }}>
       {children}
-    </Ctx.Provider>
+    </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(Ctx);
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return context;
+}

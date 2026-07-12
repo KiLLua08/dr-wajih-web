@@ -1,18 +1,16 @@
 import { useTranslation } from "react-i18next";
-import type { Lang } from "@/i18n";
 
-export function useLang(): Lang {
+export function useLang() {
   const { i18n } = useTranslation();
-  const lng = (i18n.language || "fr").split("-")[0];
-  if (lng === "en" || lng === "ar") return lng;
-  return "fr";
+  return i18n.language || "fr";
 }
 
-export function localized<T extends Record<string, unknown>>(
-  row: T,
-  base: string,
-  lang: Lang,
+export function localized(
+  obj: any,
+  field: string,
+  lang: string
 ): string {
-  const key = `${base}_${lang}` as keyof T;
-  return (row[key] as string) || (row[`${base}_fr` as keyof T] as string) || "";
+  if (!obj) return "";
+  const suffix = lang === "ar" ? "_ar" : "_fr";
+  return obj[`${field}${suffix}`] || obj[`${field}_fr`] || "";
 }

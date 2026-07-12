@@ -1,61 +1,66 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { PublicLayout } from "@/components/PublicLayout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang, localized } from "@/lib/lang";
-import { Clock } from "lucide-react";
+import { Heart } from "lucide-react";
 
-export const Route = createFileRoute("/services")({
-  head: () => ({
-    meta: [
-      { title: "Services — Cabinet Dr. Wajih Bensoltana" },
-      { name: "description", content: "Découvrez nos services dentaires : consultations, soins, esthétique, orthodontie et plus." },
-    ],
-  }),
-  component: ServicesPage,
-});
+export const Route = createFileRoute("/services")({"head": () => ({"meta": [{"title": "Services — Cabinet Dr. Wajih Bensoltana"}, {"name": "description", "content": "Découvrez nos services dentaires complets à Menzel Temime."}]}),"component": ServicesPage});
 
 function ServicesPage() {
   const { t } = useTranslation();
   const lang = useLang();
+
   const { data: services = [] } = useQuery({
-    queryKey: ["services"],
+    queryKey: ["services-page"],
     queryFn: async () => {
-      const { data } = await supabase.from("services").select("*").eq("is_active", true).order("sort_order");
+      const { data } = await supabase
+        .from("services")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order");
       return data ?? [];
     },
   });
 
   return (
     <PublicLayout>
-      <section className="gradient-hero py-16 md:py-20">
+      <section className="gradient-hero py-14">
         <div className="mx-auto max-w-6xl px-4">
-          <h1 className="text-4xl md:text-5xl font-bold">{t("services.title")}</h1>
-          <p className="mt-3 text-muted-foreground text-lg max-w-2xl">{t("services.subtitle")}</p>
+          <h1 className="text-3xl md:text-4xl font-bold">{t("home.servicesTitle")}</h1>
+          <p className="mt-2 text-muted-foreground">{t("booking.subtitle")}</p>
         </div>
       </section>
-      <section className="py-14">
-        <div className="mx-auto max-w-6xl px-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s: any) => (
-            <Card key={s.id} className="hover:shadow-elegant transition-shadow">
-              <CardContent className="p-6 flex flex-col h-full">
-                <h3 className="text-xl font-semibold mb-2">{localized(s, "name", lang)}</h3>
-                <p className="text-sm text-muted-foreground flex-1">{localized(s, "description", lang)}</p>
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Clock className="size-3.5" /> {t("services.duration", { min: s.duration_min })}
-                  </span>
-                  <Button asChild size="sm" variant="ghost">
-                    <Link to="/booking" search={{ service: s.id } as any}>{t("services.bookThis")}</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+
+      <section className="py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((service: any) => (
+              <Card key={service.id} className="group hover:shadow-elegant transition-all">
+                <CardContent className="p-6">
+                  <div className="mb-4 inline-flex size-12 items-center justify-center rounded-lg bg-accent text-accent-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <Heart className="size-6" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                    {localized(service, "name", lang)}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {localized(service, "description", lang)}
+                  </p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {t("services.duration", { min: service.duration_min })}
+                    </span>
+                    {service.price_tnd && (
+                      <span className="font-semibold text-primary">{service.price_tnd} TND</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
     </PublicLayout>

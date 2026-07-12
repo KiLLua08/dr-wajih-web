@@ -2,47 +2,77 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { PublicLayout } from "@/components/PublicLayout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, ShieldCheck, Sparkles } from "lucide-react";
+import { Award, Users, Zap, Smile } from "lucide-react";
 
-export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "À propos — Cabinet Dr. Wajih Bensoltana" },
-      { name: "description", content: "Découvrez le cabinet dentaire du Dr. Wajih Bensoltana à Menzel Temime." },
-    ],
-  }),
-  component: AboutPage,
-});
+export const Route = createFileRoute("/about")({"head": () => ({"meta": [{"title": "À Propos — Cabinet Dr. Wajih Bensoltana"}, {"name": "description", "content": "Découvrez le Cabinet Dr. Wajih Bensoltana et notre équipe."}]}),"component": AboutPage});
 
 function AboutPage() {
   const { t } = useTranslation();
-  const icons = [Heart, ShieldCheck, Sparkles];
+
   return (
     <PublicLayout>
-      <section className="gradient-hero py-16 md:py-20">
-        <div className="mx-auto max-w-4xl px-4">
-          <h1 className="text-4xl md:text-5xl font-bold">{t("about.title")}</h1>
-          <p className="mt-3 text-lg text-primary font-medium">{t("about.subtitle")}</p>
+      <section className="gradient-hero py-14">
+        <div className="mx-auto max-w-6xl px-4">
+          <h1 className="text-3xl md:text-4xl font-bold">{t("about.title")}</h1>
+          <p className="mt-2 text-muted-foreground">{t("about.intro")}</p>
         </div>
       </section>
-      <section className="py-14">
-        <div className="mx-auto max-w-4xl px-4">
-          <p className="text-lg leading-relaxed text-foreground/90">{t("about.bio")}</p>
-          <h2 className="mt-14 mb-6 text-2xl font-bold">{t("about.values")}</h2>
-          <div className="grid gap-4 md:grid-cols-3">
-            {[1, 2, 3].map((n, i) => {
-              const Icon = icons[i];
-              return (
-                <Card key={n} className="shadow-soft">
-                  <CardContent className="p-6">
-                    <div className="mb-3 grid size-10 place-items-center rounded-lg bg-accent text-accent-foreground">
-                      <Icon className="size-5" />
-                    </div>
-                    <p className="font-medium">{t(`about.value${n}`)}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+
+      <section className="py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-4 space-y-12">
+          <div className="prose prose-sm max-w-none">
+            <p className="text-lg text-muted-foreground">{t("about.experience")}</p>
+            <p className="text-lg text-muted-foreground">{t("about.mission")}</p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="shadow-soft">
+              <CardContent className="p-6">
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-lg gradient-primary text-primary-foreground">
+                  <Award className="size-6" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{t("about.experience")}</h3>
+                <p className="text-sm text-muted-foreground">
+                  Formations continues et certifications internationales dans les techniques dentaires modernes.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-soft">
+              <CardContent className="p-6">
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-lg gradient-primary text-primary-foreground">
+                  <Zap className="size-6" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{t("about.equipment")}</h3>
+                <p className="text-sm text-muted-foreground">
+                  Équipement de diagnostic avancé et techniques de traitement minimalement invasives.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-soft">
+              <CardContent className="p-6">
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-lg gradient-primary text-primary-foreground">
+                  <Users className="size-6" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{t("about.team")}</h3>
+                <p className="text-sm text-muted-foreground">
+                  Personnel qualifié et bienveillant dédié à votre confort et à votre satisfaction.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-soft">
+              <CardContent className="p-6">
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-lg gradient-primary text-primary-foreground">
+                  <Smile className="size-6" />
+                </div>
+                <h3 className="font-semibold text-lg mb-2">{t("about.mission")}</h3>
+                <p className="text-sm text-muted-foreground">
+                  Créer des sourires sains et magnifiques en mettant l'accent sur le bien-être du patient.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
