@@ -1,0 +1,140 @@
+{
+  "clinic": {
+    "name": "Cabinet Dr. Wajih Bensoltana",
+    "tagline": "Cabinet dentaire à Menzel Temime",
+    "address": "Rue Mongi Slim, Menzel Temime, Tunisie",
+    "phone": "+216 00 000 000",
+    "email": "contact@cabinet-bensoltana.tn"
+  },
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "about": "À propos",
+    "testimonials": "Témoignages",
+    "contact": "Contact",
+    "book": "Prendre rendez-vous",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "admin": "Espace admin"
+  },
+  "language": { "label": "Langue", "fr": "Français", "en": "English", "ar": "العربية" },
+  "home": {
+    "heroTitle": "Votre sourire, notre priorité",
+    "heroSubtitle": "Soins dentaires modernes et attentionnés à Menzel Temime. Prenez rendez-vous en quelques clics.",
+    "cta": "Réserver maintenant",
+    "learnMore": "Découvrir nos services",
+    "whyTitle": "Pourquoi nous choisir",
+    "why1Title": "Expertise reconnue",
+    "why1": "Une équipe qualifiée pour tous vos soins dentaires.",
+    "why2Title": "Équipement moderne",
+    "why2": "Technologie de pointe pour des soins précis et confortables.",
+    "why3Title": "Prise en charge personnalisée",
+    "why3": "Un accompagnement adapté à chaque patient.",
+    "servicesTitle": "Nos services",
+    "seeAll": "Voir tous les services",
+    "testimonialsTitle": "Ce que disent nos patients"
+  },
+  "services": {
+    "title": "Nos services dentaires",
+    "subtitle": "Une gamme complète de soins pour toute la famille.",
+    "duration": "{{min}} min",
+    "bookThis": "Réserver ce soin"
+  },
+  "about": {
+    "title": "À propos du cabinet",
+    "subtitle": "Dr. Wajih Bensoltana — Chirurgien-dentiste",
+    "bio": "Diplômé et passionné, Dr. Bensoltana s'engage à offrir des soins dentaires de qualité dans un environnement chaleureux et professionnel. Le cabinet, situé à Menzel Temime, accueille adultes et enfants pour des consultations, soins préventifs, esthétique dentaire, orthodontie et bien plus.",
+    "values": "Nos valeurs",
+    "value1": "Écoute et bienveillance",
+    "value2": "Hygiène et sécurité",
+    "value3": "Innovation et rigueur"
+  },
+  "contact": {
+    "title": "Nous contacter",
+    "subtitle": "Nous sommes là pour répondre à vos questions.",
+    "hours": "Horaires d'ouverture",
+    "getDirections": "Itinéraire",
+    "days": { "0": "Dimanche", "1": "Lundi", "2": "Mardi", "3": "Mercredi", "4": "Jeudi", "5": "Vendredi", "6": "Samedi" },
+    "closed": "Fermé"
+  },
+  "booking": {
+    "title": "Prendre rendez-vous",
+    "subtitle": "Choisissez un service, une date et un horaire.",
+    "step1": "Service",
+    "step2": "Date & heure",
+    "step3": "Vos informations",
+    "step4": "Confirmation",
+    "chooseService": "Sélectionnez un service",
+    "chooseDate": "Sélectionnez une date",
+    "chooseTime": "Créneaux disponibles",
+    "noSlots": "Aucun créneau disponible pour cette date.",
+    "fullName": "Nom complet",
+    "email": "Email",
+    "phone": "Téléphone",
+    "notes": "Notes (optionnel)",
+    "submit": "Confirmer la demande",
+    "back": "Retour",
+    "next": "Suivant",
+    "success": "Votre demande de rendez-vous a été envoyée !",
+    "successDetail": "Nous vous contacterons pour confirmer votre créneau.",
+    "bookAnother": "Prendre un autre rendez-vous",
+    "slotTaken": "Ce créneau vient d'être pris. Veuillez en choisir un autre.",
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "auth": {
+    "signIn": "Connexion",
+    "signUp": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "fullName": "Nom complet",
+    "haveAccount": "Déjà un compte ?",
+    "noAccount": "Pas encore de compte ?",
+    "submitIn": "Se connecter",
+    "submitUp": "S'inscrire",
+    "google": "Continuer avec Google",
+    "orContinue": "ou",
+    "error": "Erreur d'authentification"
+  },
+  "admin": {
+    "dashboard": "Tableau de bord",
+    "appointments": "Rendez-vous",
+    "patients": "Patients",
+    "calendar": "Calendrier",
+    "blockedSlots": "Créneaux bloqués",
+    "settings": "Paramètres",
+    "stats": {
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "pending": "En attente",
+      "totalPatients": "Patients total"
+    },
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "cancelled": "Annulé",
+      "completed": "Terminé",
+      "rescheduled": "Reprogrammé"
+    },
+    "actions": {
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "reschedule": "Reprogrammer",
+      "complete": "Marquer terminé",
+      "delete": "Supprimer",
+      "add": "Ajouter",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "blockedSlot": {
+      "date": "Date",
+      "time": "Heure (vide = journée entière)",
+      "reason": "Raison",
+      "addBlock": "Bloquer un créneau"
+    }
+  },
+  "footer": {
+    "rights": "Tous droits réservés",
+    "quickLinks": "Liens rapides",
+    "contactUs": "Nous contacter"
+  }
+}
