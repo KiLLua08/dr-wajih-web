@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 
 export function BlockedSlotsPanel() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const qc = useQueryClient();
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -35,12 +35,16 @@ export function BlockedSlotsPanel() {
     else {
       setDate(""); setTime(""); setReason("");
       qc.invalidateQueries({ queryKey: ["blocked_slots"] });
+      qc.invalidateQueries({ queryKey: ["slots"] });
     }
   }
   async function del(id: string) {
     await supabase.from("blocked_slots").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["blocked_slots"] });
+    qc.invalidateQueries({ queryKey: ["slots"] });
   }
+
+  const lang = i18n.language || "fr";
 
   return (
     <div className="space-y-4">
@@ -54,7 +58,13 @@ export function BlockedSlotsPanel() {
         {items.map((b: any) => (
           <Card key={b.id}><CardContent className="p-4 flex items-center gap-4">
             <div className="flex-1">
-              <div className="font-medium">{b.blocked_date}{b.blocked_time ? ` — ${(b.blocked_time as string).slice(0,5)}` : ` (${t("admin.blockedSlot.time")})`}</div>
+              <div className="font-medium">
+                {b.blocked_date}
+                {b.blocked_time 
+                  ? ` — ${(b.blocked_time as string).slice(0, 5)}` 
+                  : ` (${lang === "ar" ? "اليوم بأكمله" : lang === "en" ? "Whole day" : "Journée entière"})`
+                }
+              </div>
               {b.reason && <div className="text-xs text-muted-foreground">{b.reason}</div>}
             </div>
             <Button size="sm" variant="ghost" onClick={() => del(b.id)}><Trash2 className="size-4" /></Button>

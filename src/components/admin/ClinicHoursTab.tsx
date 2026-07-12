@@ -20,10 +20,9 @@ const DAYS = [
 ];
 
 interface ClinicHour {
-  id: string;
   day_of_week: number;
-  open_time: string;
-  close_time: string;
+  open_time: string | null;
+  close_time: string | null;
   is_closed: boolean;
 }
 
@@ -39,6 +38,21 @@ export default function ClinicHoursTab() {
         .select("*")
         .order("day_of_week");
       if (error) throw error;
+      
+      if (!data || data.length === 0) {
+        const defaultHours = [
+          { day_of_week: 0, open_time: "09:00:00", close_time: "18:00:00", is_closed: true },
+          { day_of_week: 1, open_time: "09:00:00", close_time: "18:00:00", is_closed: false },
+          { day_of_week: 2, open_time: "09:00:00", close_time: "18:00:00", is_closed: false },
+          { day_of_week: 3, open_time: "09:00:00", close_time: "18:00:00", is_closed: false },
+          { day_of_week: 4, open_time: "09:00:00", close_time: "18:00:00", is_closed: false },
+          { day_of_week: 5, open_time: "09:00:00", close_time: "18:00:00", is_closed: false },
+          { day_of_week: 6, open_time: "09:00:00", close_time: "18:00:00", is_closed: false },
+        ];
+        setHours(defaultHours);
+        return defaultHours;
+      }
+      
       setHours(data as ClinicHour[]);
       return data;
     },
@@ -46,16 +60,17 @@ export default function ClinicHoursTab() {
 
   const updateHours = async () => {
     try {
-      for (const hour of hours) {
-        await supabase
-          .from("clinic_hours")
-          .update({
-            open_time: hour.open_time,
-            close_time: hour.close_time,
-            is_closed: hour.is_closed,
-          })
-          .eq("id", hour.id);
-      }
+      const { error } = await supabase
+        .from("clinic_hours")
+        .upsert(
+          hours.map((h) => ({
+            day_of_week: h.day_of_week,
+            open_time: h.open_time ? (h.open_time.slice(0, 5) + ":00") : null,
+            close_time: h.close_time ? (h.close_time.slice(0, 5) + ":00") : null,
+            is_closed: h.is_closed,
+          }))
+        );
+      if (error) throw error;
       toast.success(t("admin.saved"));
     } catch (e) {
       toast.error(t("admin.error"));
@@ -77,17 +92,17 @@ export default function ClinicHoursTab() {
             {hours.map((hour) => {
               const day = DAYS.find((d) => d.value === hour.day_of_week);
               return (
-                <div key={hour.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div key={hour.day_of_week} className="flex items-center gap-4 p-4 border rounded-lg">
                   <div className="flex-1 font-semibold w-24">{day?.label}</div>
                   <div className="flex items-center gap-2 flex-1">
                     <Label className="w-16">Open</Label>
                     <Input
                       type="time"
-                      value={hour.open_time}
+                      value={hour.open_time?.slice(0, 5) ?? ""}
                       onChange={(e) =>
                         setHours(
                           hours.map((h) =>
-                            h.id === hour.id
+                            h.day_of_week === hour.day_of_week
                               ? { ...h, open_time: e.target.value }
                               : h
                           )
@@ -100,11 +115,11 @@ export default function ClinicHoursTab() {
                     <Label className="w-16">Close</Label>
                     <Input
                       type="time"
-                      value={hour.close_time}
+                      value={hour.close_time?.slice(0, 5) ?? ""}
                       onChange={(e) =>
                         setHours(
                           hours.map((h) =>
-                            h.id === hour.id
+                            h.day_of_week === hour.day_of_week
                               ? { ...h, close_time: e.target.value }
                               : h
                           )
@@ -120,7 +135,7 @@ export default function ClinicHoursTab() {
                       onChange={(e) =>
                         setHours(
                           hours.map((h) =>
-                            h.id === hour.id
+                            h.day_of_week === hour.day_of_week
                               ? { ...h, is_closed: e.target.checked }
                               : h
                           )

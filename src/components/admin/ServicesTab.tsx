@@ -20,12 +20,14 @@ import { toast } from "sonner";
 
 interface Service {
   id: string;
+  slug: string;
   name_fr: string;
+  name_en: string;
   name_ar: string;
-  description_fr: string;
-  description_ar: string;
+  description_fr: string | null;
+  description_en: string | null;
+  description_ar: string | null;
   duration_min: number;
-  price_tnd: number | null;
   is_active: boolean;
   sort_order: number;
 }
@@ -50,11 +52,13 @@ export default function ServicesTab() {
   const saveService = async () => {
     if (!formData) return;
     try {
+      const { id, ...updates } = formData;
       if (editingId) {
-        await supabase
+        const { error } = await supabase
           .from("services")
-          .update(formData)
+          .update(updates)
           .eq("id", editingId);
+        if (error) throw error;
       }
       refetch();
       setEditingId(null);
@@ -67,7 +71,8 @@ export default function ServicesTab() {
 
   const deleteService = async (id: string) => {
     try {
-      await supabase.from("services").delete().eq("id", id);
+      const { error } = await supabase.from("services").delete().eq("id", id);
+      if (error) throw error;
       refetch();
       toast.success(t("admin.deleted"));
     } catch (e) {
@@ -85,11 +90,29 @@ export default function ServicesTab() {
           <CardContent className="space-y-4">
             <div className="grid gap-4">
               <div>
+                <Label>Slug</Label>
+                <Input
+                  value={formData.slug}
+                  onChange={(e) =>
+                    setFormData({ ...formData, slug: e.target.value })
+                  }
+                />
+              </div>
+              <div>
                 <Label>Name (FR)</Label>
                 <Input
                   value={formData.name_fr}
                   onChange={(e) =>
                     setFormData({ ...formData, name_fr: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <Label>Name (EN)</Label>
+                <Input
+                  value={formData.name_en}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name_en: e.target.value })
                   }
                 />
               </div>
@@ -120,35 +143,18 @@ export default function ServicesTab() {
                   }
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Duration (min)</Label>
-                  <Input
-                    type="number"
-                    value={formData.duration_min}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        duration_min: parseInt(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label>Price (TND)</Label>
-                  <Input
-                    type="number"
-                    value={formData.price_tnd || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        price_tnd: e.target.value
-                          ? parseFloat(e.target.value)
-                          : null,
-                      })
-                    }
-                  />
-                </div>
+              <div>
+                <Label>Duration (min)</Label>
+                <Input
+                  type="number"
+                  value={formData.duration_min}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      duration_min: parseInt(e.target.value, 10) || 30,
+                    })
+                  }
+                />
               </div>
             </div>
             <div className="flex gap-2">
@@ -187,13 +193,12 @@ export default function ServicesTab() {
                   <TableRow>
                     <TableHead>{t("admin.name")}</TableHead>
                     <TableHead>{t("admin.duration")}</TableHead>
-                    <TableHead>{t("admin.price")}</TableHead>
                     <TableHead>{t("admin.active")}</TableHead>
                     <TableHead>{t("admin.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {services.map((service: any) => (
+                  {services.map((service) => (
                     <TableRow key={service.id}>
                       <TableCell className="font-medium">
                         <div>{service.name_fr}</div>
@@ -202,12 +207,7 @@ export default function ServicesTab() {
                         </div>
                       </TableCell>
                       <TableCell>{service.duration_min} min</TableCell>
-                      <TableCell>
-                        {service.price_tnd ? `${service.price_tnd} TND` : "—"}
-                      </TableCell>
-                      <TableCell>
-                        {service.is_active ? "✓" : "✗"}
-                      </TableCell>
+                      <TableCell>{service.is_active ? "✓" : "✗"}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                           <button

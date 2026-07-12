@@ -33,9 +33,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(user);
           if (user) {
             const { data } = await supabase
-              .from("admin_users")
-              .select("id")
+              .from("user_roles")
+              .select("role")
               .eq("user_id", user.id)
+              .eq("role", "admin")
               .maybeSingle();
             setIsAdmin(!!data);
           }
@@ -55,9 +56,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(session?.user ?? null);
           if (session?.user) {
             const { data } = await supabase
-              .from("admin_users")
-              .select("id")
+              .from("user_roles")
+              .select("role")
               .eq("user_id", session.user.id)
+              .eq("role", "admin")
               .maybeSingle();
             setIsAdmin(!!data);
           } else {

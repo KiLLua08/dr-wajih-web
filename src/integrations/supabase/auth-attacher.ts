@@ -1,7 +1,7 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { supabase } from "./client";
 
-export const attachSupabaseAuth = createMiddleware().server(async ({ next }) => {
+export const attachSupabaseAuth = createMiddleware({ type: "function" }).server(async ({ next }) => {
   try {
     const {
       data: { user },

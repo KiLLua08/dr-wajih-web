@@ -75,19 +75,20 @@ function BookingPage() {
     if (!serviceId || !iso || !time) return;
     setSubmitting(true);
     try {
-      const { data: patient, error: pErr } = await supabase
+      const patientId = crypto.randomUUID();
+
+      const { error: pErr } = await supabase
         .from("patients")
         .insert({
+          id: patientId,
           full_name: parsed.data.fullName,
           email: parsed.data.email,
           phone: parsed.data.phone,
-        })
-        .select("id")
-        .single();
+        });
       if (pErr) throw pErr;
 
       const { error: aErr } = await supabase.from("appointments").insert({
-        patient_id: patient.id,
+        patient_id: patientId,
         service_id: serviceId,
         appointment_date: iso,
         appointment_time: time,

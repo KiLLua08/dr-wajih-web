@@ -53,9 +53,6 @@ function ServicesPage() {
                     <span className="text-muted-foreground">
                       {t("services.duration", { min: service.duration_min })}
                     </span>
-                    {service.price_tnd && (
-                      <span className="font-semibold text-primary">{service.price_tnd} TND</span>
-                    )}
                   </div>
                 </CardContent>
               </Card>

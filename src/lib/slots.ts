@@ -36,14 +36,6 @@ export async function getAvailableSlots(dateISO: string, durationMin: number): P
   );
   if (blockedTimes.has("ALL")) return [];
 
-  const { data: fullDayBlock } = await supabase
-    .from("blocked_slots")
-    .select("id")
-    .eq("blocked_date", dateISO)
-    .is("blocked_time", null)
-    .maybeSingle();
-  if (fullDayBlock) return [];
-
   const { data: appts } = await supabase
     .from("appointments")
     .select("appointment_time, status")
