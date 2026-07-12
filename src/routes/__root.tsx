@@ -11,6 +11,13 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { initI18n, applyDirection } from "../i18n";
+import { AuthProvider } from "../components/AuthProvider";
+import { Toaster } from "../components/ui/sonner";
+import { useTranslation } from "react-i18next";
+
+// Initialize i18n once at module load (both server & client)
+initI18n();
 
 function NotFoundComponent() {
   return (
@@ -77,14 +84,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Cabinet Dr. Wajih Bensoltana — Dentiste à Menzel Temime" },
+      {
+        name: "description",
+        content:
+          "Cabinet dentaire du Dr. Wajih Bensoltana à Menzel Temime, Tunisie. Prenez rendez-vous en ligne pour consultations, soins, esthétique dentaire et plus.",
+      },
+      { property: "og:title", content: "Cabinet Dr. Wajih Bensoltana" },
+      {
+        property: "og:description",
+        content: "Soins dentaires modernes à Menzel Temime. Réservez votre rendez-vous en ligne.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -92,6 +104,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -116,11 +141,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    applyDirection(i18n.language || "fr");
+  }, [i18n.language]);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider>
+        <Outlet />
+        <Toaster position="top-center" richColors />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
