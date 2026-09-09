@@ -7,11 +7,7 @@ const CLINIC_LNG = 10.9877;
 const DIRECTIONS_URL =
   "https://www.google.com/maps/dir/?api=1&destination=36.7843,10.9877&destination_place_id=ChIJSa9EpQ16ThMRtHXlkmzNVsA";
 
-// Real embed URL — q= param drops a red pin at exact lat/lng
-const EMBED_URL = `https://www.google.com/maps/embed/v1/place?key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY&q=${CLINIC_LAT},${CLINIC_LNG}&zoom=16`;
-
-// Fallback: plain iframe using the /maps/embed?pb= approach (no API key needed)
-// Centered on Menzel Temime with a q= marker pin
+// No API key — plain embed using q= marker (free, no quota, no leakage)
 const EMBED_FALLBACK = `https://maps.google.com/maps?q=${CLINIC_LAT},${CLINIC_LNG}&z=16&output=embed`;
 
 const LANDMARK: Record<string, string> = {

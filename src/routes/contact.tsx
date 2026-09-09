@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MapEmbed } from "@/components/MapEmbed";
 import { Mail, Phone, MapPin, Clock, Instagram, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { notifyContact } from "@/lib/notify-booking.server";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -45,8 +46,7 @@ function ContactPage() {
     }
     setSubmitting(true);
     try {
-      // Simulated send — replace with real email service (Resend, EmailJS, etc.)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await notifyContact({ data: { name: form.name, email: form.email, subject: form.subject, message: form.message } });
       setSent(true);
       setForm({ name: "", email: "", subject: "", message: "" });
       toast.success(
@@ -56,7 +56,8 @@ function ContactPage() {
           ? "Message sent successfully!"
           : "Message envoyé avec succès!"
       );
-    } catch {
+    } catch (e) {
+      console.error(e);
       toast.error(t("booking.errorGeneric"));
     } finally {
       setSubmitting(false);

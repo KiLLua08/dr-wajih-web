@@ -15,7 +15,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLang, localized } from "@/lib/lang";
 import { getAvailableSlots } from "@/lib/slots";
 import { toISODate, fmtDate } from "@/lib/format";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, MessageCircle } from "lucide-react";
+import { notifyBooking } from "@/lib/notify-booking.server";
+
+const WHATSAPP_NUMBER = "21655740439"; // +216 55 740 439 primary (no + or spaces for wa.me)
+function buildWhatsAppLink(serviceName: string, dateStr: string, time: string, lang: string) {
+  const msg =
+    lang === "ar"
+      ? `السلام عليكم، أود حجز موعد: ${serviceName} يوم ${dateStr} على الساعة ${time} في عيادة الدكتور وجيه بن سلطانة.`
+      : lang === "en"
+        ? `Hello, I'd like to book: ${serviceName} on ${dateStr} at ${time} at Dr. Wajih Bensoltana clinic.`
+        : `Bonjour, je souhaite réserver : ${serviceName} le ${dateStr} à ${time} au cabinet Dr. Wajih Bensoltana.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
 
 export const Route = createFileRoute("/booking")({
   head: () => ({
@@ -105,6 +117,23 @@ function BookingPage() {
         }
         throw aErr;
       }
+      // Fire-and-forget emails (never block success even if Resend fails)
+      const serviceName = service ? localized(service, "name", lang) : "—";
+      const humanDate = date ? fmtDate(date, lang) : iso!;
+      notifyBooking({
+        data: {
+          patientName: parsed.data.fullName,
+          patientEmail: parsed.data.email,
+          patientPhone: parsed.data.phone,
+          patientNotes: parsed.data.notes || null,
+          serviceName,
+          date: humanDate,
+          isoDate: iso!,
+          time: time!,
+          lang: (lang as "fr" | "en" | "ar") || "fr",
+        },
+      }).catch((e) => console.error("[booking email]", e));
+
       setDone(true);
       setStep(4);
     } catch (e) {
@@ -234,12 +263,29 @@ function BookingPage() {
                       {date && fmtDate(date, lang)} — {time}
                     </div>
                   </div>
-                  <div className="flex justify-between">
-                    <Button variant="outline" onClick={() => setStep(2)}>{t("booking.back")}</Button>
-                    <Button onClick={submit} disabled={submitting}>
-                      {submitting && <Loader2 className="size-4 animate-spin" />}
-                      {t("booking.submit")}
-                    </Button>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex justify-between">
+                      <Button variant="outline" onClick={() => setStep(2)}>{t("booking.back")}</Button>
+                      <Button onClick={submit} disabled={submitting}>
+                        {submitting && <Loader2 className="size-4 animate-spin" />}
+                        {t("booking.submit")}
+                      </Button>
+                    </div>
+                    {/* WhatsApp primary — always visible as alternative */}
+                    {service && date && time && (
+                      <a
+                        href={buildWhatsAppLink(localized(service, "name", lang), fmtDate(date, lang), time, lang)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors"
+                      >
+                        <MessageCircle className="size-4" />
+                        {lang === "ar" ? "احجز عبر واتساب (مفضل)" : lang === "en" ? "Book via WhatsApp (preferred)" : "Réserver via WhatsApp (recommandé)"}
+                      </a>
+                    )}
+                    <p className="text-xs text-center text-muted-foreground">
+                      {lang === "ar" ? "أو احجز فورًا عبر واتساب — أسرع طريقة للرد" : lang === "en" ? "Or book instantly via WhatsApp — fastest reply" : "Ou réservez instantanément via WhatsApp — réponse la plus rapide"}
+                    </p>
                   </div>
                 </div>
               )}
@@ -251,9 +297,18 @@ function BookingPage() {
                   </div>
                   <h2 className="text-2xl font-bold">{t("booking.success")}</h2>
                   <p className="text-muted-foreground mt-2">{t("booking.successDetail")}</p>
-                  <Button className="mt-6" onClick={reset} variant="outline">
-                    {t("booking.bookAnother")}
-                  </Button>
+                  <div className="mt-6 flex flex-wrap justify-center gap-3">
+                    <Button onClick={reset} variant="outline">
+                      {t("booking.bookAnother")}
+                    </Button>
+                    {service && date && time && (
+                      <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
+                        <a href={buildWhatsAppLink(localized(service, "name", lang), fmtDate(date, lang), time, lang)} target="_blank" rel="noopener noreferrer">
+                          <MessageCircle className="size-4" /> WhatsApp
+                        </a>
+                      </Button>
+                    )}
+                  </div>
                 </div>
               )}
             </CardContent>

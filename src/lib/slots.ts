@@ -36,12 +36,20 @@ export async function getAvailableSlots(dateISO: string, durationMin: number): P
   );
   if (blockedTimes.has("ALL")) return [];
 
+  // Fetch taken slots WITH their service durations for interval overlap check
   const { data: appts } = await supabase
     .from("appointments")
-    .select("appointment_time, status")
+    .select("appointment_time, status, service_id, services(duration_min)")
     .eq("appointment_date", dateISO)
     .in("status", ["pending", "confirmed"]);
-  const takenTimes = new Set((appts ?? []).map((a: any) => (a.appointment_time as string).slice(0, 5)));
+
+  // Build intervals [startMin, endMin) for each taken appointment
+  const takenIntervals: Array<[number, number]> = (appts ?? []).map((a: any) => {
+    const startMin = toMinutes((a.appointment_time as string).slice(0, 5));
+    // duration from joined services, fallback 30 if missing
+    const dur = (a.services?.duration_min as number | undefined) ?? 30;
+    return [startMin, startMin + dur];
+  });
 
   const start = toMinutes((hours.open_time as string).slice(0, 5));
   const end = toMinutes((hours.close_time as string).slice(0, 5));
@@ -51,9 +59,22 @@ export async function getAvailableSlots(dateISO: string, durationMin: number): P
 
   const slots: Slot[] = [];
   for (let m = start; m + durationMin <= end; m += STEP_MIN) {
+    const slotStart = m;
+    const slotEnd = m + durationMin;
     const time = toHHMM(m);
     if (blockedTimes.has(time)) continue;
-    if (takenTimes.has(time)) continue;
+    // Exact blocked check first (keeps 09:00 whole-day semantics), then interval overlap
+    const overlapsTaken = takenIntervals.some(([s, e]) => slotStart < e && slotEnd > s);
+    if (overlapsTaken) continue;
+    // Blocked interval check: if any blocked_time falls inside candidate interval, block it
+    // (blocked slots are 30-min granularity; treat as [blockedMin, blockedMin+30))
+    const blockedOverlap = Array.from(blockedTimes).some((bt) => {
+      if (bt === "ALL") return true;
+      const bStart = toMinutes(bt as string);
+      const bEnd = bStart + 30;
+      return slotStart < bEnd && slotEnd > bStart;
+    });
+    if (blockedOverlap) continue;
     if (isToday && m <= nowMin + 30) continue;
     slots.push({ time });
   }

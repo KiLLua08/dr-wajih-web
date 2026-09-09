@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Roadmap — Dr. Wajih Go-Live</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0f1a;--card:#0f172a;--border:rgba(255,255,255,.08);--text:#e6eef8;--muted:#8ea0bf;--teal:#14b8a6;--teal2:#06b6d4;--amber:#f59e0b;--red:#ef4444;--radius:16px;--shadow:0 20px 60px rgba(0,0,0,.5)}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(900px 600px at 20% -10%, rgba(20,184,166,.18), transparent 60%), radial-gradient(800px 500px at 90% 0%, rgba(6,182,214,.14), transparent 60%), var(--bg);color:var(--text);font:14px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#22d3ee;text-decoration:none}.nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px);background:rgba(10,15,26,.75);border-bottom:1px solid var(--border)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .brand{display:flex;gap:10px;align-items:center;font-weight:700}.mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#14b8a6,#06b6d4);display:grid;place-items:center;color:#fff;box-shadow:0 8px 24px rgba(20,184,166,.35)}
+  .pill{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--muted)}
+  .hero{max-width:1200px;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center}
+  .hero h1{margin:0;font-size:34px;line-height:1.05;letter-spacing:-.03em}.hero h1 span{background:linear-gradient(135deg,#14b8a6,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{color:var(--muted);margin:8px 0 0}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.badge{font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted)}.badge.r{border-color:rgba(239,68,68,.35);color:#fca5a5;background:rgba(239,68,68,.12)}.badge.t{border-color:rgba(20,184,166,.35);color:#5eead4;background:rgba(20,184,166,.12)}.badge.a{border-color:rgba(245,158,11,.35);color:#fcd34d;background:rgba(245,158,11,.12)}
+  .hero-visual{border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow)}.hero-visual img{width:100%;height:300px;object-fit:cover;display:block}
+  .wrap{max-width:1200px;margin:0 auto;padding:18px 20px 60px;display:grid;gap:16px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+  .card-h{padding:16px 18px 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}.card-h h2{margin:0;font-size:18px;letter-spacing:-.02em}
+  .tag{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;padding:5px 8px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.04)}
+  .tag.r{color:#fca5a5;border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.12)}.tag.t{color:#5eead4;border-color:rgba(20,184,166,.35);background:rgba(20,184,166,.12)}.tag.a{color:#fcd34d;border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.12)}
+  .card-b{padding:14px 18px 18px;color:#cbd5e1}.card-b p{margin:0 0 8px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding:8px 10px}td{border-bottom:1px solid rgba(255,255,255,.06);padding:9px 10px;vertical-align:top}tr:hover td{background:rgba(255,255,255,.02)}
+  code{font-family:JetBrains Mono, monospace;font-size:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 6px;border-radius:6px;color:#e2e8f0}
+  pre{margin:8px 0;background:#0b1220;border:1px solid var(--border);border-radius:12px;padding:12px;overflow:auto;font:12.5px/1.6 JetBrains Mono, monospace;color:#cbd5e1}
+  .callout{border-left:3px solid var(--teal);background:rgba(20,184,166,.08);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 12px;border-radius:0 12px 12px 0;margin:10px 0}.callout.r{border-left-color:var(--red);background:rgba(239,68,68,.08)}.callout.a{border-left-color:var(--amber);background:rgba(245,158,11,.08)}
+  .gantt{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#0b1220}
+  .gantt-row{display:grid;grid-template-columns:160px 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.06);min-height:44px;align-items:center}
+  .gantt-row:last-child{border-bottom:0}.gantt-label{padding:10px 12px;border-right:1px solid rgba(255,255,255,.06);font-weight:600;font-size:13px;color:var(--text);background:rgba(255,255,255,.02)}
+  .gantt-label small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+  .gantt-bar{padding:8px 12px;display:flex;gap:8px;align-items:center}
+  .bar{height:14px;border-radius:999px;position:relative}
+  .bar.r{background:linear-gradient(90deg,#ef4444,#f87171)}.bar.t{background:linear-gradient(90deg,#14b8a6,#06b6d4)}.bar.a{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.legend span{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}.legend i{width:10px;height:10px;border-radius:4px;display:inline-block}
+  .check{width:18px;height:18px;border-radius:6px;border:1px solid var(--border);display:grid;place-items:center;font-size:10px}
+  @media(max-width:900px){.hero{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.gantt-row{grid-template-columns:1fr}.gantt-label{border-right:0;border-bottom:1px solid rgba(255,255,255,.06)}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner"><div class="brand"><div class="mark">W</div> Roadmap → Go Live <span class="pill">P0 blocks → P1 launch → P2 polish</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="ARCHITECTURE.md" style="color:var(--muted)">ARCHITECTURE.md ↗</a><a href="NEXT-STEPS.md" style="color:var(--muted)">NEXT-STEPS.md ↗</a><a href="architecture.html" style="color:#5eead4">architecture.html ↗</a></div></div></nav>
+
+<section class="hero">
+  <div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><span class="badge r">P0 — must fix before first real patient</span><span class="badge t">P1 — needed before you advertise “book online”</span><span class="badge a">P2 — premium after revenue</span></div>
+    <h1>What’s missing to <span>actually work</span></h1>
+    <p>Demo is solid. Production needs 6 blockers cleared. Everything below is sorted by “will you miss a booking if this isn’t done?”</p>
+    <div class="legend"><span><i style="background:#ef4444"></i> P0 blocker</span><span><i style="background:#14b8a6"></i> P1 launch</span><span><i style="background:#f59e0b"></i> P2 polish</span></div>
+  </div>
+  <div class="hero-visual"><img src="./roadmap-hero.png" alt="Roadmap gantt infographic"/></div>
+</section>
+
+<div class="wrap" style="max-width:1200px;margin:0 auto;padding:0 20px 60px;display:grid;gap:16px">
+
+  <section class="card">
+    <div class="card-h"><h2>⏱ 2-week sprint — visual Gantt</h2><span class="tag">Proposal</span></div>
+    <div class="card-b">
+      <div class="gantt">
+        <div class="gantt-row"><div class="gantt-label">Day 1 <small>Env + DB</small></div><div class="gantt-bar"><div class="bar r" style="width:28%"></div><span style="font-size:12px;color:var(--muted)">service_role, seed, verify, remove lock drift, rotate Maps key</span></div></div>
+        <div class="gantt-row"><div class="gantt-label">Day 2 <small>Anti-spam</small></div><div class="gantt-bar" style="padding-left:28%"><div class="bar r" style="width:14%"></div><span style="font-size:12px;color:var(--muted)">Turnstile + rate limit</span></div></div>
+        <div class="gantt-row"><div class="gantt-label">Days 3-4 <small>Emails</small></div><div class="gantt-bar" style="padding-left:42%"><div class="bar r" style="width:28%"></div><span style="font-size:12px;color:var(--muted)">createAppointment serverFn + Resend (clinic + patient ×3 langs)</span></div></div>
+        <div class="gantt-row"><div class="gantt-label">Day 4 <small>Admin bootstrap</small></div><div class="gantt-bar" style="padding-left:60%"><div class="bar r" style="width:10%"></div><span style="font-size:12px;color:var(--muted)">first admin without SQL</span></div></div>
+        <div class="gantt-row"><div class="gantt-label">Day 5 <small>Slots fix</small></div><div class="gantt-bar" style="padding-left:70%"><div class="bar r" style="width:14%"></div><span style="font-size:12px;color:var(--muted)">interval overlap + tests</span></div></div>
+        <div class="gantt-row"><div class="gantt-label">Week 2 <small>Launch</small></div><div class="gantt-bar"><div class="bar t" style="width:100%"></div><span style="font-size:12px;color:var(--muted)">sitemap/robots/OG/JSON-LD, mentions légales, domain SSL, pagination+realtime, phone lib</span></div></div>
+        <div class="gantt-row"><div class="gantt-label">Month 2 <small>Polish</small></div><div class="gantt-bar"><div class="bar a" style="width:100%"></div><span style="font-size:12px;color:var(--muted)">WhatsApp, SMS reminders cron, PWA, Playwright</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>🚨 P0 — 6 blockers (ship week 1)</h2><span class="tag r">Will lose bookings if skipped</span></div>
+    <div class="card-b">
+      <table>
+        <tr><th>#</th><th>Blocker</th><th>Symptom today</th><th>Fix (one line)</th><th>Done when</th></tr>
+        <tr><td><span class="pill" style="background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)">P0-1</span></td><td><b>Env half-wired</b><br><code>SUPABASE_SERVICE_ROLE_KEY</code> missing</td><td><code>supabaseAdmin</code> throws on first serverFn; <code>curl /services</code> empty</td><td>Add service_role + run <code>supabase/seed.sql</code>, delete <code>package-lock.json</code>, add <code>.env.example</code></td><td><code>bun build</code> passes & 5 services returned</td></tr>
+        <tr><td><span class="pill" style="background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)">P0-2</span></td><td><b>No notifications</b></td><td>Patient sees “Confirmed” but clinic inbox silent; <code>contact.tsx</code> fakes with <code>setTimeout</code></td><td>Server <code>createAppointment</code> → upsert patient + insert pending + Resend 2 emails (clinic + patient in booking language)</td><td>Booking → inbox &lt;10s</td></tr>
+        <tr><td><span class="pill" style="background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)">P0-3</span></td><td><b>No first admin</b></td><td>Anyone can <code>/auth</code> signup but never becomes admin; requires manual SQL</td><td>Seed script / <code>promoteToAdmin(email)</code> + doc</td><td>First user clicks once → <code>/admin</code></td></tr>
+        <tr><td><span class="pill" style="background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)">P0-4</span></td><td><b>60-min overlap bug</b></td><td><code>getAvailableSlots</code> only checks exact <code>HH:MM</code>; 09:00 60m + 09:30 double-books</td><td>Interval overlap: <code>[m, m+dur) overlaps [takenStart, takenStart+takenDur)</code></td><td>E2e 09:00 blocks 09:30</td></tr>
+        <tr><td><span class="pill" style="background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)">P0-5</span></td><td><b>Open inserts → spam</b></td><td><code>RLS INSERT true</code> on <code>patients/appointments</code></td><td>Cloudflare Turnstile + 5/IP/hour rate limit + <code>ip_hash</code></td><td>Bot blocked, human unblocked</td></tr>
+        <tr><td><span class="pill" style="background:rgba(239,68,68,.15);color:#fca5a5;border-color:rgba(239,68,68,.3)">P0-6</span></td><td><b>Leaked Maps key</b></td><td><code>AIzaSyD-9tSr...</code> in git, billed, not even used (fallback does the work)</td><td>Delete <code>EMBED_URL</code>, keep <code>EMBED_FALLBACK</code>, rotate key</td><td><code>grep AIza == 0</code>, map still shows</td></tr>
+      </table>
+      <div class="callout r"><b>Audit proof:</b> <code>curl /rest/v1/services</code> → empty, <code>grep AIza src/components/MapEmbed.tsx</code> → 1 hit, <code>client.server.ts:34</code> reads <code>SERVICE_ROLE_KEY</code> which <code>.env</code> lacks, <code>contact.tsx:31</code> <code>setTimeout</code> fake.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>📦 P1 — before you poster “book online” (week 2)</h2><span class="tag t">Trust & SEO</span></div>
+    <div class="card-b">
+      <div class="cols">
+        <div>
+          <p><b>Code</b></p>
+          <table>
+            <tr><th>Task</th><th>File</th></tr>
+            <tr><td>Move booking to server transaction + <code>for update</code></td><td><code>src/routes/booking.tsx</code></td></tr>
+            <tr><td>Phone normalize (<code>libphonenumber-js</code> +216)</td><td><code>lib/format.ts</code></td></tr>
+            <tr><td>Dedup patients by <code>lower(email)</code></td><td>serverFn</td></tr>
+            <tr><td>Realtime admin: <code>channel('appointments')</code></td><td><code>AdminDashboard</code></td></tr>
+            <tr><td>Pagination + search</td><td><code>AppointmentsTab</code></td></tr>
+          </table>
+        </div>
+        <div>
+          <p><b>Ops</b></p>
+          <table>
+            <tr><th>Task</th><th>Output</th></tr>
+            <tr><td><code>robots.txt</code> + <code>sitemap.xml</code></td><td>Crawlable, from <code>routeTree</code></td></tr>
+            <tr><td>OG image + MedicalBusiness JSON-LD</td><td>Rank for “dentiste Menzel Temime”</td></tr>
+            <tr><td><code>/mentions-legales</code></td><td>RGPD/TNPD legal</td></tr>
+            <tr><td>Sentry / Plausible</td><td>Know abandonment</td></tr>
+            <tr><td>Domain + SSL (Cloudflare Pages)</td><td><code>drwajihbensoltana.tn</code></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="callout"><b>i18n gap:</b> <code>ar.json</code> is shorter than <code>fr.json</code> — run <code>jq keys</code> diff before launch, and swap SVG tooth for real clinic photos.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>✨ P2 — polish after revenue (month 2)</h2><span class="tag a">Delight</span></div>
+    <div class="card-b">
+      <div class="cols">
+        <div><p>• WhatsApp <code>wa.me/216...</code> as second CTA<br>• SMS reminders 24h before (pg_cron + Twilio) — cuts no-shows ~25%<br>• PWA for staff “add to home”</p></div>
+        <div><p>• Framer-motion + skeletons<br>• Supabase Storage for CMS images<br>• Vitest + Playwright e2e happy path</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="border-color:rgba(20,184,166,.25)">
+    <div class="card-h"><h2>✅ 5-min wins you can do now</h2><span class="tag t">No code</span></div>
+    <div class="card-b">
+<pre>curl -H "apikey: $VITE_SUPABASE_PUBLISHABLE_KEY" "$VITE_SUPABASE_URL/rest/v1/services?select=slug"
+git grep -n "AIzaSy" src/components/MapEmbed.tsx   # should be 0 after fix
+git rm package-lock.json && bun install
+# pick: Resend vs Gmail SMTP → give me provider + admin email + domain choice</pre>
+      <p style="margin-top:10px">Docs: <code>docs/NEXT-STEPS.md</code> (this plan text) · <code>docs/ARCHITECTURE.md</code> + <code>docs/architecture.html</code> (deep dives). Give me 5 answers and I start coding in this branch:</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <span class="pill">1 Email provider?</span><span class="pill">2 Domain owned?</span><span class="pill">3 WhatsApp primary?</span><span class="pill">4 Admin email?</span><span class="pill">5 Turnstile ok?</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-h"><h2>What I’ll build next (one click after you answer)</h2></div>
+    <div class="card-b">
+      <table>
+        <tr><th>Next PR</th><th>Files touched</th><th>Risk</th></tr>
+        <tr><td><b>Server booking + Resend</b> + Turnstile</td><td><code>src/routes/booking.tsx</code> → serverFn, <code>supabase/migrations</code> <code>email_logs</code>, <code>MapEmbed</code> key removal</td><td>Low — additive, no RLS break</td></tr>
+        <tr><td>Slot interval fix</td><td><code>src/lib/slots.ts</code> + unit test</td><td>Low</td></tr>
+        <tr><td>Admin realtime + pagination</td><td><code>AdminDashboard/*Tab</code></td><td>Medium — query keys</td></tr>
+      </table>
+    </div>
+  </section>
+
+</div>
+<script>
+// no js needed
+</script>
+</body>
+</html>

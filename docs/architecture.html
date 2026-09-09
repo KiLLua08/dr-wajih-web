@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Architecture — Cabinet Dr. Wajih Bensoltana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root{
+    --bg: #0a0f1a;
+    --bg-soft: #111827;
+    --card: #0f172a;
+    --card-2: #132034;
+    --border: rgba(255,255,255,.08);
+    --border-strong: rgba(255,255,255,.14);
+    --text: #e6eef8;
+    --muted: #8ea0bf;
+    --accent: #14b8a6;
+    --accent-2: #06b6d4;
+    --accent-3: #22d3ee;
+    --warn: #f59e0b;
+    --radius: 16px;
+    --shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(900px 600px at 20% -10%, rgba(20,184,166,.18), transparent 60%), radial-gradient(800px 500px at 90% 0%, rgba(6,182,214,.14), transparent 60%), var(--bg);color:var(--text);font:14px/1.6 "Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent-3);text-decoration:none}
+  a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
+  /* header */
+  .nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px) saturate(1.2);background:rgba(10,15,26,.75);border-bottom:1px solid var(--border)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em}
+  .brand-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#14b8a6,#06b6d4);display:grid;place-items:center;color:#fff;box-shadow:0 8px 24px rgba(20,184,166,.35);font-weight:800}
+  .nav-links{display:flex;gap:6px;flex-wrap:wrap}
+  .nav-links a{padding:6px 10px;border-radius:999px;border:1px solid transparent;color:var(--muted);font-size:13px}
+  .nav-links a:hover{color:var(--text);border-color:var(--border);background:rgba(255,255,255,.04);text-decoration:none}
+  .nav-links a.active{color:#fff;background:rgba(20,184,166,.15);border-color:rgba(20,184,166,.3)}
+  /* hero */
+  .hero{max-width:1200px;margin:0 auto;padding:28px 20px 10px;display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:center}
+  .hero h1{margin:0;font-size:40px;line-height:1.05;letter-spacing:-.03em}
+  .hero h1 span{background:linear-gradient(135deg,#14b8a6,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{color:var(--muted);font-size:15px;margin:10px 0 0}
+  .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .badge{font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--muted)}
+  .badge.accent{border-color:rgba(20,184,166,.35);color:#5eead4;background:rgba(20,184,166,.12)}
+  .hero-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{appearance:none;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);padding:10px 16px;border-radius:999px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+  .btn.primary{background:linear-gradient(135deg,#14b8a6,#06b6d4);border-color:transparent;color:#fff;box-shadow:0 8px 24px rgba(20,184,166,.35)}
+  .btn:hover{transform:translateY(-1px)}
+  .hero-visual{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow)}
+  .hero-visual img{width:100%;height:320px;object-fit:cover;display:block}
+  .hero-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 40%, rgba(10,15,26,.85) 100%)}
+  .hero-visual-caption{position:absolute;left:16px;right:16px;bottom:14px;z-index:1;display:flex;justify-content:space-between;align-items:end;gap:12px}
+  .hero-visual-caption strong{font-size:13px}
+  .hero-visual-caption span{font-size:12px;color:rgba(255,255,255,.75)}
+  /* stats */
+  .stats{max-width:1200px;margin:14px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .stat{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+  .stat-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex:0 0 auto}
+  .stat strong{font-size:22px;line-height:1}
+  .stat span{font-size:12px;color:var(--muted)}
+  /* main */
+  .wrap{max-width:1200px;margin:0 auto;padding:18px 20px 60px}
+  .grid{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+  .toc{position:sticky;top:64px;border:1px solid var(--border);background:rgba(15,23,42,.7);backdrop-filter:blur(12px);border-radius:16px;padding:14px;overflow:auto;max-height:calc(100vh - 80px)}
+  .toc h3{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .toc a{display:block;padding:6px 8px;border-radius:8px;color:var(--muted);font-size:13px;border:1px solid transparent}
+  .toc a:hover{color:var(--text);background:rgba(255,255,255,.04);border-color:var(--border);text-decoration:none}
+  .toc a.active{color:#fff;background:rgba(20,184,166,.14);border-color:rgba(20,184,166,.3)}
+  .toc .sub{padding-left:14px;font-size:12.5px}
+  .content{display:grid;gap:16px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+  .card-h{padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .card-h h2{margin:0;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+  .tag{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;padding:5px 8px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,.04)}
+  .tag.teal{color:#5eead4;border-color:rgba(20,184,166,.35);background:rgba(20,184,166,.12)}
+  .card-b{padding:14px 18px 18px;color:#cbd5e1}
+  .card-b p{margin:0 0 10px;color:#cbd5e1}
+  .card-b p.lead{color:var(--text);font-size:15px}
+  .kpi{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);color:#5eead4;font-size:12px;font-weight:600}
+  /* mermaid */
+  .mermaid-wrap{position:relative;border:1px solid var(--border);background:#0b1220;border-radius:14px;overflow:hidden}
+  .mermaid-toolbar{position:absolute;top:8px;right:8px;z-index:2;display:flex;gap:6px}
+  .mermaid-toolbar button{appearance:none;border:1px solid var(--border);background:rgba(15,23,42,.9);color:var(--text);width:32px;height:32px;border-radius:8px;display:grid;place-items:center;cursor:pointer}
+  .mermaid-toolbar button:hover{background:#1e293b}
+  .mermaid{padding:12px;overflow:auto;max-height:560px}
+  .mermaid svg{max-width:none !important}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{ text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding:8px 10px}
+  td{border-bottom:1px solid rgba(255,255,255,.06);padding:9px 10px;vertical-align:top}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  code{font-family:"JetBrains Mono", ui-monospace, monospace;font-size:12.5px;background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 6px;border-radius:6px;color:#e2e8f0}
+  pre{margin:10px 0 0;background:#0b1220;border:1px solid var(--border);border-radius:12px;padding:12px;overflow:auto;font:12.5px/1.6 "JetBrains Mono", monospace;color:#cbd5e1}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .callout{border-left:3px solid var(--accent);background:rgba(20,184,166,.08);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 12px;border-radius:0 12px 12px 0;color:#cbd5e1;margin:10px 0}
+  .callout.warn{border-left-color:var(--warn);background:rgba(245,158,11,.08)}
+  .pill{font-size:11px;padding:3px 7px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--muted)}
+  .flex{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .legend span{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:10px;height:10px;border-radius:4px;display:inline-block}
+  /* file tree */
+  .tree{font:12.5px/1.7 "JetBrains Mono", monospace;color:#a8b3cf}
+  .tree b{color:#e2e8f0}
+  .tree .c{color:#64748b}
+  /* responsive */
+  @media (max-width: 980px){
+    .hero{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .grid{grid-template-columns:1fr}
+    .toc{position:static;max-height:none}
+    .cols{grid-template-columns:1fr}
+  }
+  @media (max-width: 560px){
+    .hero h1{font-size:30px}
+    .stats{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand"><div class="brand-mark">W</div> <span>Dr. Wajih — Architecture</span> <span class="pill">TanStack Start · Supabase</span></div>
+      <div class="nav-links">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#diagrams">Diagrams</a>
+        <a href="#data">Data</a>
+        <a href="#flows">Flows</a>
+        <a href="#ui">UI</a>
+        <a href="./ARCHITECTURE.md">Markdown ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="overview">
+    <div>
+      <div class="flex" style="gap:8px;margin-bottom:10px">
+        <span class="badge accent">● Live — TanStack Start SSR</span>
+        <span class="badge">Bun · Vite 8 · Nitro</span>
+        <span class="badge">Postgres RLS</span>
+      </div>
+      <h1>Cabinet <span>Dr. Wajih Bensoltana</span><br>— System Architecture</h1>
+      <p>Isomorphic clinic site: Nitro SSR for SEO (Menzel Temime), hydrate to SPA for instant booking. Postgres is the API. 8 routes, 8 tables, 3 languages, 0 custom backend.</p>
+      <div class="hero-badges">
+        <span class="badge">React 19</span><span class="badge">TanStack Router 1.170</span><span class="badge">Query 5.101</span><span class="badge">Tailwind 4 OKLCH</span><span class="badge">shadcn/Radix</span><span class="badge">i18next RTL</span>
+      </div>
+      <div class="hero-actions">
+        <a class="btn primary" href="#diagrams">Explore diagrams ↓</a>
+        <a class="btn" href="./ARCHITECTURE.md">Read full doc (MD)</a>
+        <a class="btn" href="#stack">Stack table</a>
+      </div>
+      <div class="legend">
+        <span><i style="background:#14b8a6"></i> SSR / Edge</span>
+        <span><i style="background:#06b6d4"></i> Supabase</span>
+        <span><i style="background:#1e3a5f;border:1px solid #38bdf8"></i> Postgres</span>
+        <span><i style="background:#f59e0b"></i> Attention</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img src="./architecture-hero.png" alt="Isometric architecture hero — browser, Nitro SSR, Supabase" />
+      <div class="hero-visual-caption">
+        <div><strong>Browsing → SSR → PostgREST → Postgres</strong><br><span>One migration, dual Supabase clients, RLS as authz</span></div>
+        <span class="pill" style="color:#fff;border-color:rgba(255,255,255,.25)">docs/architecture-hero.png</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><div class="stat-icon" style="background:rgba(20,184,166,.15);color:#5eead4">◈</div><div><strong>8</strong> <span>routes</span><br><span>file-based · routeTree.gen.ts</span></div></div>
+    <div class="stat"><div class="stat-icon" style="background:rgba(6,182,214,.15);color:#22d3ee">⬢</div><div><strong>8</strong> <span>tables</span><br><span>+ 3 enums · RLS everywhere</span></div></div>
+    <div class="stat"><div class="stat-icon" style="background:rgba(139,92,246,.15);color:#a78bfa">◎</div><div><strong>7</strong> <span>admin panels</span><br><span>stats + tabs orchestration</span></div></div>
+    <div class="stat"><div class="stat-icon" style="background:rgba(245,158,11,.15);color:#fbbf24">◆</div><div><strong>3</strong> <span>locales</span><br><span>fr/en/ar · RTL flip · column tripling</span></div></div>
+  </section>
+
+  <div class="wrap">
+    <div class="grid">
+      <aside class="toc" id="toc">
+        <h3>On this page</h3>
+        <a href="#diagrams" class="active">1 — System context</a>
+        <a href="#lifecycle">2 — Request lifecycle</a>
+        <a href="#er">3 — Data model (ER)</a>
+        <a href="#components">4 — Component tree</a>
+        <a href="#slots">5 — Slot engine</a>
+        <a href="#stack">6 — Stack matrix</a>
+        <a href="#filesystem">7 — File system</a>
+        <a href="#dual">8 — Dual Supabase clients</a>
+        <a href="#rls">9 — RLS policies</a>
+        <a href="#auth">10 — Auth & RBAC</a>
+        <a href="#i18n">11 — i18n & RTL</a>
+        <a href="#ui">12 — UI tokens</a>
+        <a href="#admin">13 — Admin dashboard</a>
+        <a href="#errors">14 — Error resilience</a>
+        <a href="#build">15 — Build & deploy</a>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+          <a href="./ARCHITECTURE.md">📄 Full markdown doc ↗</a>
+          <a href="#top" class="sub">Back to top ↑</a>
+        </div>
+      </aside>
+
+      <main class="content">
+        <!-- 1 -->
+        <section class="card" id="diagrams">
+          <div class="card-h"><h2>⬢ 1 · System context — how the pieces fit</h2><span class="tag teal">High level</span></div>
+          <div class="card-b">
+            <p class="lead">Browser talks only to Nitro. Nitro SSRs React. React hydrates and then reads Postgres directly via PostgREST — no API server in between. Service role exists but stays server-only.</p>
+            <div class="mermaid-wrap">
+              <div class="mermaid-toolbar"><button title="Zoom in" onclick="zoom(this,1.15)">＋</button><button title="Zoom out" onclick="zoom(this,0.85)">－</button><button title="Reset" onclick="zoom(this,0)">↺</button></div>
+              <div class="mermaid">
+flowchart TB
+  User([Patient / Admin<br/>Browser]) --> CDN[Cloudflare Edge + Nitro<br/>src/server.ts fetch]
+  CDN --> SSR[TanStack Start<br/>src/start.ts<br/>functionMiddleware + requestMiddleware]
+  SSR --> Router[TanStack Router<br/>routeTree.gen.ts · 8 routes<br/>createRouter + queryClient]
+  Router --> Public[PublicLayout routes<br/>/ · /services · /about · /contact<br/>/testimonials · /booking · /auth]
+  Router --> Gate{{/admin gate<br/>AuthProvider isAdmin?}}
+  Gate -->|isAdmin| Dash[AdminDashboard<br/>4 stats + 7 tabs]
+  Gate -->|!user| AuthR[→ /auth]
+  Gate -->|!isAdmin| Deny[Accès restreint]
+
+  Public --> Q[TanStack Query<br/>useQuery + supabase-js anon<br/>VITE_SUPABASE_URL]
+  Dash --> Q
+  Q --> REST[(Supabase PostgREST<br/>auto REST over Postgres<br/>RLS policies)]
+  REST --> PG[(Postgres<br/>8 tables · 3 enums<br/>indexes + triggers)]
+
+  SupaAuth[Supabase Auth<br/>auth.users] --- PG
+  SSR -. getUser via cookie .-> SupaAuth
+
+  AdminClient[supabaseAdmin<br/>service_role<br/>client.server.ts<br/>Proxy lazy] -. never to browser .-> PG
+
+  I18n[i18next fr/en/ar<br/>localStorage → navigator<br/>RTL dir flip] -.- Public
+  I18n -.- Dash
+
+  classDef edge fill:#0f766e,stroke:#14b8a6,color:#fff,stroke-width:2px;
+  classDef sb fill:#0e7490,stroke:#06b6d4,color:#fff;
+  classDef pg fill:#0e2a4a,stroke:#38bdf8,color:#e0f2fe,stroke-width:2px;
+  class CDN,SSR,Router edge
+  class REST,SupaAuth,AdminClient sb
+  class PG pg
+              </div>
+            </div>
+            <div class="callout">TanStack Start is <b>isomorphic</b>: first paint is SSR HTML (SEO for “dentiste Menzel Temime”), then hydration turns it into an SPA. Navigations after that are client-side with prefetch.</div>
+          </div>
+        </section>
+
+        <!-- 2 -->
+        <section class="card" id="lifecycle">
+          <div class="card-h"><h2>⟐ 2 · Request lifecycle — GET /booking in 11 hops</h2><span class="tag">Sequence</span></div>
+          <div class="card-b">
+            <p>Note the h3 swallowing fix — Nitro's <code>normalizeCatastrophicSsrResponse</code> recovers a swallowed throw into a real 500 page.</p>
+            <div class="mermaid-wrap">
+              <div class="mermaid-toolbar"><button onclick="zoom(this,1.15)">＋</button><button onclick="zoom(this,0.85)">－</button><button onclick="zoom(this,0)">↺</button></div>
+              <div class="mermaid">
+sequenceDiagram
+  participant B as Browser
+  participant N as Nitro src/server.ts
+  participant S as Start src/start.ts
+  participant R as Router + __root
+  participant Q as Query
+  participant SB as PostgREST
+  participant PG as Postgres
+
+  B->>N: GET /booking Accept:text/html
+  N->>N: lazy import server-entry (singleton)
+  N->>S: handler.fetch(request, env, ctx)
+  S->>S: attachSupabaseAuth: getUser()
+  S->>S: errorMiddleware: try next()
+  S->>R: match /booking → head meta + component
+  R-->>N: HTML stream RootShell + Outlet
+  N-->>B: 200 html + HeadContent + Scripts
+  B->>B: initI18n + AuthProvider + QueryClient
+  B->>Q: ["services"] → GET /services?is_active=true
+  Q->>SB->>PG: RLS: Anyone can view active → 200
+  PG-->>B: services[]
+  B->>Q: ["slots", iso, duration] → 3 reads
+  Q->>SB: clinic_hours, blocked_slots, appointments
+  SB->>PG: RLS checks
+  PG-->>B: hours + blocked + taken → slots[]
+  B->>SB: POST patients + POST appointments pending
+  SB->>PG: INSERT + unique index pending/confirmed
+  PG-->>B: 201 or 23505→ toast slotTaken
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 -->
+        <section class="card" id="er">
+          <div class="card-h"><h2>⬣ 3 · Data model — 8 tables, 3 enums, 2 triggers</h2><span class="tag teal">Postgres</span></div>
+          <div class="card-b">
+            <p class="lead">Single migration <code>20260712...sql</code> creates everything. Partial unique index <code>appointments_unique_active_slot WHERE status IN ('pending','confirmed')</code> is the ultimate double-booking guard.</p>
+            <div class="mermaid-wrap">
+              <div class="mermaid-toolbar"><button onclick="zoom(this,1.15)">＋</button><button onclick="zoom(this,0.85)">－</button><button onclick="zoom(this,0)">↺</button></div>
+              <div class="mermaid">
+erDiagram
+  auth_users ||--o{ profiles : "id PK→auth"
+  auth_users ||--o{ user_roles : "user_id"
+  auth_users ||--o{ patients : "user_id nullable"
+  patients ||--o{ appointments : "patient_id"
+  services ||--o{ appointments : "service_id"
+
+  appointments {
+    uuid id PK
+    uuid patient_id FK
+    uuid service_id FK nullable
+    date appointment_date
+    time appointment_time
+    enum status pending_confirmed_cancelled_completed_rescheduled
+    enum language fr_en_ar
+    text patient_notes
+    text admin_notes
+    timestamptz created_at
+  }
+  patients {
+    uuid id PK
+    uuid user_id FK nullable
+    text full_name
+    text email
+    text phone
+    date date_of_birth
+    text notes
+  }
+  services {
+    uuid id PK
+    text slug unique
+    text name_fr
+    text name_en
+    text name_ar
+    text description_fr
+    text description_en
+    text description_ar
+    int duration_min
+    text icon
+    int sort_order
+    boolean is_active
+  }
+  profiles {
+    uuid id PK FK
+    text full_name
+    text phone
+  }
+  user_roles {
+    uuid id PK
+    uuid user_id FK
+    enum role admin_patient
+  }
+  clinic_hours {
+    int day_of_week PK 0_6
+    time open_time
+    time close_time
+    boolean is_closed
+  }
+  blocked_slots {
+    uuid id PK
+    date blocked_date
+    time blocked_time nullable
+    text reason
+  }
+  testimonials {
+    uuid id PK
+    text patient_name
+    int rating 1_5
+    text content_fr
+    text content_en
+    text content_ar
+    boolean is_published
+  }
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4 -->
+        <section class="card" id="components">
+          <div class="card-h"><h2>▦ 4 · Component tree — who renders whom</h2><span class="tag">React 19</span></div>
+          <div class="card-b">
+            <div class="mermaid-wrap">
+              <div class="mermaid-toolbar"><button onclick="zoom(this,1.15)">＋</button><button onclick="zoom(this,0.85)">－</button><button onclick="zoom(this,0)">↺</button></div>
+              <div class="mermaid">
+flowchart TB
+  RS[__root.tsx RootShell<br/>html head HeadContent Scripts] --> RC[RootComponent<br/>QueryClientProvider<br/>AuthProvider<br/>Toaster + Outlet]
+  RC --> PL[PublicLayout<br/>Header + main + Footer]
+  RC --> Gate[admin.tsx AdminGate<br/>loading→/auth<br/>!isAdmin→restricted]
+
+  PL --> Home[index.tsx /<br/>Hero + Why3 + Services6 + Testimonials3 + CTA]
+  PL --> Svc[services.tsx]
+  PL --> About[about.tsx 6 pillars]
+  PL --> Contact[contact.tsx + MapEmbed]
+  PL --> Testi[testimonials.tsx]
+  PL --> Book[booking.tsx 4-step wizard<br/>Stepper + SvcGrid + Calendar/TimeGrid + Form + Success]
+  PL --> Auth[auth.tsx]
+
+  Gate --> Dash[AdminDashboard<br/>Stats 4 + Tabs 7]
+  Dash --> A1[AppointmentsTab]
+  Dash --> A2[CalendarPanel]
+  Dash --> A3[PatientsTab]
+  Dash --> A4[ServicesTab]
+  Dash --> A5[BlockedSlotsPanel]
+  Dash --> A6[ClinicHoursTab]
+  Dash --> A7[TestimonialsTab]
+
+  Book --- SL[lib/slots.ts<br/>getAvailableSlots]
+  PL --- HDR[Header.tsx<br/>Links activeProps<br/>LanguageSwitcher<br/>admin/signout + mobile drawer]
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 -->
+        <section class="card" id="slots">
+          <div class="card-h"><h2>◐ 5 · Slot engine — the only algorithm</h2><span class="tag teal">lib/slots.ts</span></div>
+          <div class="card-b">
+            <p class="lead"><code>getAvailableSlots(dateISO, durationMin) → Slot[]</code> — 30-min steps, respects <code>clinic_hours</code>, <code>blocked_slots</code>, <code>appointments(pending+confirmed)</code>, and today+30m buffer.</p>
+            <div class="mermaid-wrap">
+              <div class="mermaid-toolbar"><button onclick="zoom(this,1.15)">＋</button><button onclick="zoom(this,0.85)">－</button><button onclick="zoom(this,0)">↺</button></div>
+              <div class="mermaid">
+flowchart LR
+  A[dateISO + durationMin] --> B{clinic_hours<br/>for dow exists<br/>& !is_closed?}
+  B -->|no| Z1[return []]
+  B -->|yes| C[blocked_slots<br/>for date]
+  C --> D{has ALL<br/>null time?}
+  D -->|yes| Z2[return []]
+  D -->|no| E[appointments<br/>pending+confirmed<br/>for date]
+  E --> F[takenTimes Set]
+  F --> G[for m=start; m+durationMin<=end; m+=30]
+  G --> H{blocked or taken<br/>or today && m<=now+30?}
+  H -->|yes| SK[skip]
+  H -->|no| PU[push HH:MM]
+  SK --> G
+  PU --> G
+  G --> OUT[Slot[]]
+              </div>
+            </div>
+            <div class="callout warn"><b>Known limitation:</b> 60-min service at 09:00 marks only 09:00 taken; 09:30 still shown as free (DB unique index catches exact clash, but interval overlap isn't computed). Fix would be interval intersection.</div>
+            <pre>start = open_time minutes
+end   = close_time minutes
+for (m=start; m+durationMin<=end; m+=30) {
+  time = toHHMM(m)
+  if (blocked.has(time) || taken.has(time)) continue
+  if (isToday && m <= nowMin+30) continue
+  slots.push({time})
+}</pre>
+          </div>
+        </section>
+
+        <!-- 6 -->
+        <section class="card" id="stack">
+          <div class="card-h"><h2>⧉ 6 · Stack matrix</h2><span class="tag">Versions</span></div>
+          <div class="card-b">
+            <table>
+              <tr><th>Layer</th><th>Choice</th><th>Ver</th><th>Role</th></tr>
+              <tr><td>Meta</td><td>TanStack Start</td><td>1.168</td><td>SSR + file routes + server functions</td></tr>
+              <tr><td>Router</td><td>TanStack Router</td><td>1.170</td><td>routeTree.gen.ts, Link prefetch, typed params</td></tr>
+              <tr><td>Bundler</td><td>Vite + @lovable.dev/vite-tanstack-config</td><td>8 / 2.7.1</td><td>Hides 30 lines: tailwind, nitro, alias, devtools, dedupe</td></tr>
+              <tr><td>Runtime</td><td>Nitro (h3)</td><td>3.0-beta</td><td>Universal server, cloudflare target by default</td></tr>
+              <tr><td>Language</td><td>TypeScript strict</td><td>5.8</td><td>@/* alias → ./src/*</td></tr>
+              <tr><td>UI</td><td>React + shadcn/ui + Radix</td><td>19.2</td><td>~15 primitives: dialog, tabs, calendar…</td></tr>
+              <tr><td>Style</td><td>Tailwind + tw-animate-css</td><td>4.2</td><td>OKLCH tokens, gradient-hero, shadow-soft/elegant</td></tr>
+              <tr><td>Data</td><td>TanStack Query</td><td>5.101</td><td>Cache for services, slots, admin stats</td></tr>
+              <tr><td>Forms</td><td>React Hook Form + Zod</td><td>7.71 / 3.24</td><td>patientSchema on booking</td></tr>
+              <tr><td>Backend</td><td>Supabase (PostgREST 14.5)</td><td>2.110</td><td>Postgres + Auth + RLS is the API</td></tr>
+              <tr><td>i18n</td><td>i18next + detector</td><td>26</td><td>localStorage:navigator, fr/en/ar</td></tr>
+              <tr><td>Dates</td><td>date-fns + react-day-picker</td><td>4 / 9</td><td>toISODate, fmtDate, Calendar</td></tr>
+              <tr><td>Mgr</td><td>Bun (minimumReleaseAge 86400)</td><td>—</td><td>24h supply-chain guard</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- 7 -->
+        <section class="card" id="filesystem">
+          <div class="card-h"><h2>🗂 7 · File system — guided tour</h2><span class="tag">Conventions</span></div>
+          <div class="card-b">
+<pre class="tree"><b>vite.config.ts</b>         <span class="c">— 6 lines, delegates to @lovable plugin (DO NOT duplicate)</span>
+<b>src/router.tsx</b>         <span class="c">— createRouter({routeTree, queryClient, scrollRestoration})</span>
+<b>src/start.ts</b>           <span class="c">— createStart({functionMiddleware:[attachAuth], requestMiddleware:[error]})</span>
+<b>src/server.ts</b>          <span class="c">— Nitro fetch entry, h3 swallow fix, lazy server-entry</span>
+<b>src/routes/__root.tsx</b>  <span class="c">— RootShell html + RootComponent providers + SEO head + 404/error</span>
+  routes/index.tsx       <span class="c">/</span>         routes/booking.tsx   <span class="c">/booking 4-step wizard</span>
+  routes/services.tsx    <span class="c">/services</span>  routes/auth.tsx      <span class="c">/auth</span>
+  routes/about.tsx       <span class="c">/about</span>     routes/admin.tsx     <span class="c">/admin gate</span>
+  routes/contact.tsx     <span class="c">/contact</span>   routes/testimonials.tsx
+<b>src/components/AuthProvider.tsx</b>  <span class="c">— user/isAdmin/loading context + onAuthStateChange</span>
+<b>src/integrations/supabase/</b>
+  client.ts              <span class="c">anon publishable — browser</span>
+  client.server.ts       <span class="c">service_role Proxy lazy — server only!</span>
+  types.ts               <span class="c">Database type (787 lines)</span>
+  auth-attacher.ts       <span class="c">functionMiddleware getUser per request</span>
+  auth-middleware.ts     <span class="c">requireSupabaseAuth Bearer validator</span>
+<b>src/lib/slots.ts</b>       <span class="c">— slot engine (the algorithm)</span>
+<b>src/lib/lang.ts</b>        <span class="c">— localized(obj, field, lang) for _fr/_en/_ar</span>
+<b>src/i18n/</b>  index.ts + locales/fr,en,ar.json
+<b>supabase/migrations/20260712...sql</b> <span class="c">— single source of truth, 8 tables</span>
+</pre>
+            <div class="callout">The contract: <code>*.server.ts</code> and <code>supabaseAdmin</code> must never be imported in a route file — routes ship to the client bundle.</div>
+          </div>
+        </section>
+
+        <!-- 8 -->
+        <section class="card" id="dual">
+          <div class="card-h"><h2>🔐 8 · Dual Supabase clients</h2><span class="tag warn">Security</span></div>
+          <div class="card-b">
+            <div class="cols">
+              <div style="border:1px solid var(--border);border-radius:12px;padding:12px;background:rgba(255,255,255,.03)">
+                <strong style="color:#22d3ee">BROWSER — client.ts</strong>
+                <pre>VITE_SUPABASE_URL +
+VITE_SUPABASE_PUBLISHABLE_KEY
+→ createClient(url, key)
+RLS enforced, anon key public
+Every route does supabase.from()
+No custom fetch wrapper needed</pre>
+              </div>
+              <div style="border:1px solid rgba(245,158,11,.25);border-radius:12px;padding:12px;background:rgba(245,158,11,.06)">
+                <strong style="color:#fbbf24">SERVER — client.server.ts</strong>
+                <pre>SUPABASE_URL +
+SUPABASE_SERVICE_ROLE_KEY
+→ Proxy lazy createClient
+custom fetch: strip Authorization
+  if sb_publishable_/sb_secret_
+  + set apikey header
+storage:undefined persist:false
+ONLY .server.ts / functions</pre>
+              </div>
+            </div>
+            <p style="margin-top:10px">Anon key is intentionally public; RLS decides what it can do (e.g. <code>appointments INSERT WHERE status='pending'</code> only). Service role bypasses RLS — it is god-mode for future cron / seed / server functions.</p>
+          </div>
+        </section>
+
+        <!-- 9 -->
+        <section class="card" id="rls">
+          <div class="card-h"><h2>🛡 9 · RLS policies</h2><span class="tag teal">Postgres</span></div>
+          <div class="card-b">
+            <table>
+              <tr><th>Table</th><th>Policy</th><th>To</th><th>Using / Check</th></tr>
+              <tr><td>profiles</td><td>Users manage own</td><td>authenticated ALL</td><td><code>auth.uid()=id</code></td></tr>
+              <tr><td>user_roles</td><td>Read own roles</td><td>authenticated SELECT</td><td><code>auth.uid()=user_id</code></td></tr>
+              <tr><td>services</td><td>View active</td><td>anon, auth SELECT</td><td><code>is_active=true</code></td></tr>
+              <tr><td>services</td><td>Admins manage</td><td>auth ALL</td><td><code>has_role(auth.uid(),'admin')</code></td></tr>
+              <tr><td>patients</td><td>Public can create</td><td>anon,auth INSERT</td><td><code>true</code> ⚠ open</td></tr>
+              <tr><td>appointments</td><td>Public can book</td><td>anon,auth INSERT</td><td><code>status='pending'</code></td></tr>
+              <tr><td>appointments</td><td>View active slot times</td><td>anon,auth SELECT</td><td><code>status IN (pending,confirmed)</code></td></tr>
+              <tr><td>blocked_slots</td><td>Anyone view / admins manage</td><td>…</td><td>true / has_role</td></tr>
+              <tr><td>clinic_hours</td><td>Anyone view / admins manage</td><td>…</td><td>true / has_role</td></tr>
+              <tr><td>testimonials</td><td>Published view / admins manage</td><td>…</td><td><code>is_published=true</code> / has_role</td></tr>
+            </table>
+            <div class="callout warn"><b>Open inserts</b> are intentional for frictionless anonymous booking but need rate-limit / captcha before scaling. Duplicate patient rows per booking is by design (<code>crypto.randomUUID()</code> per booking, not deduped).</div>
+          </div>
+        </section>
+
+        <!-- 10 -->
+        <section class="card" id="auth">
+          <div class="card-h"><h2>👤 10 · Auth & RBAC</h2><span class="tag">Supabase Auth</span></div>
+          <div class="card-b">
+            <div class="mermaid-wrap"><div class="mermaid">
+flowchart LR
+  U[auth.users] --> T1[trigger on_auth_user_created]
+  T1 --> P[profiles id=auth.id]
+  T1 --> R[user_roles patient]
+  R --> H[has_role uid admin?]
+  H -->|yes| Admin[/admin → Dashboard]
+  H -->|no| Deny[Accès restreint]
+  U -. signInWithPassword .-> AuthProv[AuthProvider<br/>getUser + maybeSingle admin<br/>+ onAuthStateChange]
+            </div></div>
+            <p><code>isAdmin</code> is derived client-side; real enforcement is RLS (<code>has_role</code> security definer). Patients booking are anonymous — no auth user, <code>patients.user_id = null</code>.</p>
+          </div>
+        </section>
+
+        <!-- 11 -->
+        <section class="card" id="i18n">
+          <div class="card-h"><h2>🌐 11 · i18n & RTL</h2><span class="tag">fr · en · ar</span></div>
+          <div class="card-b">
+            <div class="cols">
+              <div>
+                <p class="lead">Static JSON import — no CMS fetch.</p>
+                <pre>initI18n() at module load
+resources: {fr, en, ar}
+fallbackLng: "fr"
+detection: [localStorage, navigator]
+  caches: [localStorage]
+  key: i18nextLng</pre>
+                <pre>applyDirection(lang)
+if ar → html dir=rtl lang=ar
+else   dir=ltr lang=en|fr</pre>
+              </div>
+              <div>
+                <p><code>localized(obj, field, lang)</code> picks column suffix:</p>
+                <pre>ar → obj[field_ar] || _fr
+en → obj[field_en] || _fr
+fr → obj[field_fr] || _en</pre>
+                <p>DB columns are tripled: <code>name_fr/name_en/name_ar</code>. Some routes use inline ternaries for pillars.</p>
+                <p><code>fmtDate</code> → <code>toLocaleDateString(ar-TN || fr-FR)</code>. Fonts: Inter + Noto Sans Arabic, RTL body font switch via <code>html[dir=rtl]</code>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 12 -->
+        <section class="card" id="ui">
+          <div class="card-h"><h2>🎨 12 · UI design system — OKLCH teal</h2><span class="tag teal">styles.css</span></div>
+          <div class="card-b">
+            <div class="cols">
+              <div>
+                <p class="lead">Tailwind 4 <code>@theme inline</code> maps CSS vars → utilities.</p>
+                <pre>:root {
+  --primary: oklch(0.62 0.11 195);
+  --primary-glow: oklch(0.78 0.09 190);
+  --secondary: oklch(0.96 0.02 195);
+  --background: oklch(0.995 0.005 195);
+  --gradient-hero: linear-gradient(135deg, ...);
+  --shadow-soft: 0 4px 20px -4px .../0.15
+  --shadow-elegant: 0 20px 50px -20px .../0.25
+}</pre>
+              </div>
+              <div>
+                <p>Utilities:</p>
+                <pre>@utility gradient-hero { background: var(--gradient-hero) }
+@utility gradient-primary { ... }
+@utility shadow-soft { box-shadow: ... }
+@utility shadow-elegant { ... }</pre>
+                <p>shadcn/ui components in <code>src/components/ui/*</code> + <code>cn()</code> = <code>clsx+tailwind-merge</code>. Header is sticky <code>backdrop-blur-md</code> with <code>activeProps</code>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 13 -->
+        <section class="card" id="admin">
+          <div class="card-h"><h2>📊 13 · Admin dashboard — orchestrator</h2><span class="tag">7 tabs</span></div>
+          <div class="card-b">
+            <p class="lead"><code>AdminDashboard.tsx</code> — 4 stat cards (each a <code>select count head</code>) + <code>Tabs</code> with 7 panels, each owning its own queries/mutations.</p>
+            <table>
+              <tr><th>Tab</th><th>Component</th><th>Owns</th></tr>
+              <tr><td>Appointments</td><td>AppointmentsTab</td><td>Table, status filter, inline status update</td></tr>
+              <tr><td>Calendar</td><td>CalendarPanel</td><td>Monthly view of appointments × blocked</td></tr>
+              <tr><td>Patients</td><td>PatientsTab</td><td>List + search, CRUD</td></tr>
+              <tr><td>Services</td><td>ServicesTab</td><td>Trilingual CRUD (name/desc ×3), sort_order, is_active</td></tr>
+              <tr><td>Blocked Slots</td><td>BlockedSlotsPanel</td><td>blocked_date + optional blocked_time (null=whole day)</td></tr>
+              <tr><td>Hours</td><td>ClinicHoursTab</td><td>7 rows day_of_week 0-6, open/close/is_closed</td></tr>
+              <tr><td>Testimonials</td><td>TestimonialsTab</td><td>is_published toggle, rating</td></tr>
+            </table>
+            <p>No pagination, no realtime yet — refetch on tab change via Query invalidation. Recharts is installed for future analytics.</p>
+          </div>
+        </section>
+
+        <!-- 14 -->
+        <section class="card" id="errors">
+          <div class="card-h"><h2>🚨 14 · Error resilience — surviving h3 swallowing</h2><span class="tag warn">5s TTL buffer</span></div>
+          <div class="card-b">
+            <table>
+              <tr><th>Layer</th><th>File</th><th>Mechanism</th></tr>
+              <tr><td>Capture</td><td>lib/error-capture.ts</td><td>global <code>error/unhandledrejection</code> → <code>lastCapturedError</code> 5s TTL</td></tr>
+              <tr><td>Middleware</td><td>start.ts errorMiddleware</td><td><code>try next() catch</code> → if <code>statusCode</code> rethrow else <code>renderErrorPage()</code></td></tr>
+              <tr><td>Server entry</td><td>server.ts fetch</td><td><code>normalizeCatastrophicSsrResponse</code> detects <code>{"unhandled":true}</code> JSON → swap for HTML + log real stack</td></tr>
+              <tr><td>Boundary</td><td>__root.tsx ErrorComponent</td><td>reportLovableError + “Try again” (<code>router.invalidate</code>) + “Go home”</td></tr>
+              <tr><td>Fallback</td><td>lib/error-page.ts</td><td>Static HTML string for non-React crashes (no JS)</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- 15 -->
+        <section class="card" id="build">
+          <div class="card-h"><h2>🚀 15 · Build & deploy — Bun + Vite + Nitro</h2><span class="tag">Cloudflare</span></div>
+          <div class="card-b">
+<pre>buns install  (bunfig.toml minimumReleaseAge 86400 — 24h guard)
+  ├─ dev:     vite dev   → HMR + TanStack devtools first + Lovable bridge
+  ├─ build:   vite build → client bundle (.output/public) + server bundle (.output/server)
+  │                          tanstackStart.server.entry = "server"  (src/server.ts)
+  │                          nitro target: cloudflare (default from @lovable config)
+  ├─ preview: vite preview / nitro preview
+  └─ lint:    eslint .  ·  format: prettier --write .</pre>
+            <p>Env: <code>VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY</code> (public) + <code>SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY</code> (server only). <code>supabase/config.toml</code> project_id migrated to <code>vefiungygrrkkwekydre</code>. Lovable autosync: commits to the connected branch sync to the editor — never force-push.</p>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-h"><h2>💭 Decisions & next</h2><span class="tag">Trade-offs</span></div>
+          <div class="card-b">
+            <table>
+              <tr><th>Decision</th><th>Win</th><th>Cost / Next</th></tr>
+              <tr><td>No API, PostgREST direct</td><td>Zero backend, RLS is authz</td><td>Need server functions for booking transaction + rate limit</td></tr>
+              <tr><td>Anon patient rows</td><td>Zero-friction booking</td><td>Duplicates by email; dedup + patient portal later</td></tr>
+              <tr><td>30m fixed step</td><td>Simple grid</td><td>Interval overlap check needed for 60m services</td></tr>
+              <tr><td>Single migration</td><td>One view of truth</td><td>Split into incremental migrations next</td></tr>
+              <tr><td>@lovable vite config</td><td>6-line config</td><td>Magic; debugging = reading node_modules</td></tr>
+              <tr><td>Static JSON i18n + tripled columns</td><td>Simple, no CMS</td><td>jsonb translations table scales better for 4th locale</td></tr>
+            </table>
+            <div class="callout" style="margin-top:12px"><b>Suggested next:</b> server function for booking (upsert patient by email → insert appointment in one transaction), Turnstile captcha, interval slot check, pagination + realtime on admin, pg_cron reminder emails.</div>
+          </div>
+        </section>
+
+        <section class="card" style="border-color:rgba(20,184,166,.25)">
+          <div class="card-h"><h2>📚 Full written doc</h2></div>
+          <div class="card-b">
+            <p>This HTML is the visual companion. The canonical deep dive (filesystem tour, RLS table, slot pseudocode, build notes, glossary) is <a href="./ARCHITECTURE.md"><code>docs/ARCHITECTURE.md</code></a> — 500+ lines, GitHub-renderable with copy-pastable Mermaid sources.</p>
+            <p style="margin-top:8px"><span class="kpi">Generated 2026-09-09</span> <code>52f1590</code> · branch <code>arena/01a086f7-dr-wajih-web</code> · Lovable Cloud</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+<script>
+  mermaid.initialize({startOnLoad:true, theme:'dark', themeVariables:{primaryColor:'#0f766e', primaryTextColor:'#e6eef8', lineColor:'#334155', tertiaryColor:'#0b1220'}, flowchart:{curve:'basis'}, sequence:{mirrorActors:false}});
+  function zoom(btn, factor){
+    const wrap = btn.closest('.mermaid-wrap');
+    const svg = wrap.querySelector('svg');
+    if(!svg) return;
+    if(factor===0){ svg.style.transform=''; svg.style.transformOrigin=''; return; }
+    const cur = svg.style.transform.match(/scale\(([^)]+)\)/);
+    const curScale = cur ? parseFloat(cur[1]) : 1;
+    const next = Math.min(2.5, Math.max(0.5, curScale * factor));
+    svg.style.transform = 'scale('+next+')';
+    svg.style.transformOrigin = 'top left';
+  }
+  // toc active
+  const tocLinks = [...document.querySelectorAll('.toc a[href^="#"]')];
+  const sections = tocLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const onScroll = () => {
+    let active = sections[0];
+    for(const s of sections){ if(window.scrollY + 120 >= s.offsetTop) active = s; }
+    tocLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+active.id));
+  };
+  addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+</script>
+</body>
+</html>
